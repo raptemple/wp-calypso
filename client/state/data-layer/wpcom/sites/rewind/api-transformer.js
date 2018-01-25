@@ -4,6 +4,12 @@
  */
 import { camelCase } from 'lodash';
 
+/**
+ * Internal dependencies
+ */
+import { http } from 'state/data-layer/wpcom-http/actions';
+import { requestRewindState } from 'state/rewind/actions';
+
 const transformCredential = data =>
 	Object.assign(
 		{
@@ -28,6 +34,16 @@ const transformDownload = data =>
 		data.validUntil && { validUntil: new Date( data.validUntil * 1000 ) }
 	);
 
+const makeRewindDismisser = data => siteId =>
+	http( {
+		apiVersion: '1',
+		method: data.method,
+		path: data.path,
+		body: data.requestBody,
+		onSuccess: requestRewindState( siteId ),
+		onFailure: requestRewindState( siteId ),
+	} );
+
 const transformRewind = data =>
 	Object.assign(
 		{
@@ -36,7 +52,8 @@ const transformRewind = data =>
 			status: data.status,
 		},
 		data.progress && { progress: data.progress },
-		data.reason && { reason: data.reason }
+		data.reason && { reason: data.reason },
+		data.links && data.links.dismiss && { dismiss: makeRewindDismisser( data.links.dismiss ) }
 	);
 
 export const transformApi = data =>
