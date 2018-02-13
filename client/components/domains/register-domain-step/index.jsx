@@ -331,6 +331,10 @@ class RegisterDomainStep extends React.Component {
 	};
 
 	onSearchChange = searchQuery => {
+		if ( ! this._isMounted ) {
+			return;
+		}
+
 		const loadingResults = Boolean( getFixedDomainSearch( searchQuery ) );
 
 		this.setState( {
