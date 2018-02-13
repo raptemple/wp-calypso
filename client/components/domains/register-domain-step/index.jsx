@@ -232,6 +232,11 @@ class RegisterDomainStep extends React.Component {
 				delete state.lastSurveyVertical;
 			}
 
+			if ( this.props.suggestion ) {
+				state.lastQuery = this.props.suggestion;
+				state.loadingResults = true;
+			}
+
 			this.setState( state );
 		}
 
