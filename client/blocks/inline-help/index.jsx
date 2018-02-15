@@ -21,6 +21,7 @@ import Button from 'components/button';
 import Popover from 'components/popover';
 import InlineHelpSearchResults from './inline-help-search-results';
 import InlineHelpSearchCard from './inline-help-search-card';
+import InlineHelpContactForm from './inline-help-contact-form';
 import { getInlineHelpSearchResultsForQuery, getSearchQuery } from 'state/inline-help/selectors';
 
 /**
@@ -41,6 +42,7 @@ class InlineHelp extends Component {
 
 	state = {
 		showInlineHelp: false,
+		showContactForm: false,
 	};
 
 	componentDidMount() {
@@ -83,20 +85,18 @@ class InlineHelp extends Component {
 		this.props.recordTracksEvent( 'calypso_inlinehelp_morehelp_click' );
 	}
 
-	showContactForm = () => {
-		// console.log( 'showContactForm' );
-	}
-
-	hideContactForm = () => {
-		// console.log( 'hideContactForm' );
+	toggleContactForm = () => {
+		this.setState( { showContactForm: ! this.state.showContactForm } );
 	}
 
 	render() {
 		const { translate } = this.props;
-		const classes = { 'is-active': this.state.showInlineHelp };
+		const { showContactForm, showInlineHelp } = this.state;
+		const inlineHelpButtonClasses = { 'is-active': showInlineHelp };
+		const contactFormButtonClasses = { 'is-active': showContactForm };
 		return (
 			<Button
-				className={ classNames( 'inline-help', classes ) }
+				className={ classNames( 'inline-help', inlineHelpButtonClasses ) }
 				onClick={ this.handleHelpButtonClicked }
 				borderless
 				title={ translate( 'Help' ) }
@@ -112,11 +112,16 @@ class InlineHelp extends Component {
 				>
 					<div className="inline-help__heading">
 						<InlineHelpSearchCard query={ this.props.searchQuery } />
-						<InlineHelpSearchResults searchQuery={ this.props.searchQuery } />
-						<Button onClick={ this.showContactForm } className="inline-help__button" borderless>
+						{ ! showContactForm && <InlineHelpSearchResults searchQuery={ this.props.searchQuery } /> }
+						<Button
+							onClick={ this.toggleContactForm }
+							className={ classNames( 'inline-help__button', contactFormButtonClasses ) }
+							borderless
+						>
 							<Gridicon icon="comment" /> { translate( 'Contact us' ) }
-							<Gridicon icon="chevron-down" className="inline-help__button-icon-right" />
+							<Gridicon icon={ showContactForm ? 'chevron-up' : 'chevron-down' } className="inline-help__button-icon-right" />
 						</Button>
+						{ showContactForm && <InlineHelpContactForm /> }
 						<Button onClick={ this.moreHelpClicked } className="inline-help__button" borderless href="/help">
 							<Gridicon icon="help" /> { translate( 'More help' ) }
 						</Button>
