@@ -34,14 +34,13 @@ const transformDownload = data =>
 		data.validUntil && { validUntil: new Date( data.validUntil * 1000 ) }
 	);
 
-const makeRewindDismisser = data => siteId =>
+const makeRewindDismisser = data =>
 	http( {
-		apiVersion: '1',
+		apiVersion: data.apiVersion,
 		method: data.method,
 		path: data.path,
-		body: data.requestBody,
-		onSuccess: requestRewindState( siteId ),
-		onFailure: requestRewindState( siteId ),
+		onSuccess: requestRewindState( data.site_id ),
+		onFailure: requestRewindState( data.site_id ),
 	} );
 
 const transformRewind = data =>
