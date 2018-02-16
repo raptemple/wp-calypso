@@ -3,16 +3,10 @@
  * Internal dependencies
  */
 import { receiveRestoreSuccess } from '../';
-import { getRewindRestoreProgress } from 'state/activity-log/actions';
-
-const siteId = 77203074;
-const timestamp = 1496768464;
-const restoreId = 12345;
+import { requestRewindState } from 'state/rewind/actions';
 
 describe( 'receiveRestoreSuccess', () => {
 	test( 'should dispatch get restore progress on success', () => {
-		expect( receiveRestoreSuccess( { siteId, timestamp }, restoreId ) ).toEqual(
-			getRewindRestoreProgress( siteId, restoreId )
-		);
+		expect( receiveRestoreSuccess( { siteId: 1337 } ) ).toEqual( requestRewindState( 1337 ) );
 	} );
 } );
