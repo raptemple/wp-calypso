@@ -84,4 +84,13 @@ export default {
 		defaultVariation: 'group_0',
 		allowExistingUsers: true,
 	},
+	domainSearchPrefill: {
+		datestamp: '20180226',
+		variations: {
+			noPrefill: 50,
+			withSiteTitle: 50,
+		},
+		defaultVariation: 'noPrefill',
+		allowExistingUsers: true,
+	},
 };
