@@ -45,18 +45,22 @@ class PlanFeaturesSummary extends Component {
 			return null;
 		}
 
-		if ( isJetpackSite ) {
-			if ( relatedMonthlyPlan ) {
-				yearlyPrice = relatedMonthlyPlan.raw_price * 12;
-				discountYearlyPrice = rawPrice;
+		if ( discountPrice ) {
+			if ( isJetpackSite ) {
+				yearlyPrice = rawPrice;
+				discountYearlyPrice = discountPrice;
 			} else {
 				monthlyPrice = rawPrice;
-				yearlyPrice = rawPrice * 12;
+				yearlyPrice = monthlyPrice * 12;
+				discountYearlyPrice = discountPrice * 12;
 			}
-		} else {
-			monthlyPrice = rawPrice;
-			yearlyPrice = rawPrice * 12;
-			discountYearlyPrice = discountPrice * 12;
+		} else if ( relatedMonthlyPlan ) {
+			yearlyPrice = relatedMonthlyPlan.raw_price * 12;
+			discountYearlyPrice = rawPrice;
+		}
+
+		if ( ! yearlyPrice || ! discountYearlyPrice ) {
+			return null;
 		}
 
 		return (

@@ -119,14 +119,13 @@ class PlanFeatures extends Component {
 		const credits = planProperties.reduce(
 			( prev, prop ) => {
 				let current = 0;
-				if ( site.jetpack ) {
-					if ( prop.relatedMonthlyPlan ) {
-						current = prop.relatedMonthlyPlan.raw_price * 12 - prop.rawPrice;
-					} else {
-						current = 0;
+				if ( prop.discountPrice ) {
+					current = prop.rawPrice - prop.discountPrice;
+					if ( ! site.jetpack ) {
+						current = current * 12;
 					}
-				} else {
-					current = ( prop.rawPrice - prop.discountPrice ) * 12;
+				} else if ( prop.relatedMonthlyPlan ) {
+					current = prop.relatedMonthlyPlan.raw_price * 12 - prop.rawPrice;
 				}
 
 				if ( current > prev.amount ) {
@@ -266,6 +265,7 @@ class PlanFeatures extends Component {
 			return (
 				<div className="plan-features__mobile-plan" key={ planName }>
 					<PlanFeaturesHeader
+						available={ available }
 						current={ current }
 						currencyCode={ currencyCode }
 						popular={ popular }
@@ -330,6 +330,7 @@ class PlanFeatures extends Component {
 
 		return map( planProperties, properties => {
 			const {
+				available,
 				currencyCode,
 				current,
 				planConstantObj,
@@ -370,6 +371,7 @@ class PlanFeatures extends Component {
 				<td key={ planName } className={ classes }>
 					<PlanFeaturesHeader
 						audience={ audience }
+						available={ available }
 						basePlansPath={ basePlansPath }
 						billingTimeFrame={ billingTimeFrame }
 						current={ current }

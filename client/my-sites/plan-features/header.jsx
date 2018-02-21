@@ -109,9 +109,15 @@ class PlanFeaturesHeader extends Component {
 	}
 
 	getCreditLabel() {
-		const { showModifiedPricingDisplay, discountPrice, rawPrice, relatedMonthlyPlan } = this.props;
+		const {
+			available,
+			showModifiedPricingDisplay,
+			discountPrice,
+			rawPrice,
+			relatedMonthlyPlan,
+		} = this.props;
 
-		if ( ! showModifiedPricingDisplay ) {
+		if ( ! showModifiedPricingDisplay || ! available || this.isPlanCurrent() ) {
 			return null;
 		}
 
@@ -294,6 +300,7 @@ class PlanFeaturesHeader extends Component {
 }
 
 PlanFeaturesHeader.propTypes = {
+	available: PropTypes.bool,
 	billingTimeFrame: PropTypes.string.isRequired,
 	current: PropTypes.bool,
 	onClick: PropTypes.func,
