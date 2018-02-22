@@ -16,6 +16,7 @@ import SignupActions from 'lib/signup/actions';
 import formState from 'lib/form-state';
 import { setSiteTitle } from 'state/signup/steps/site-title/actions';
 import { setDesignType } from 'state/signup/steps/design-type/actions';
+import { setDomainSearchPrefill } from 'state/signup/steps/domains/actions';
 import { getSiteTitle } from 'state/signup/steps/site-title/selectors';
 import { setSiteGoals } from 'state/signup/steps/site-goals/actions';
 import { getSiteGoals } from 'state/signup/steps/site-goals/selectors';
@@ -259,6 +260,7 @@ class AboutStep extends Component {
 		if ( siteTitleInput !== '' ) {
 			siteTitleValue = siteTitleInput;
 			this.props.setSiteTitle( siteTitleValue );
+			this.props.setDomainSearchPrefill( siteTitleValue );
 		}
 
 		this.props.recordTracksEvent( 'calypso_signup_actions_user_input', {
@@ -315,8 +317,7 @@ class AboutStep extends Component {
 		}
 
 		//Store
-		const nextFlowName =
-			designType === DESIGN_TYPE_STORE ? 'store-nux' : this.props.flowName;
+		const nextFlowName = designType === DESIGN_TYPE_STORE ? 'store-nux' : this.props.flowName;
 
 		//Pressable
 		if (
@@ -611,5 +612,5 @@ export default connect(
 		siteTopic: getSurveyVertical( state ),
 		userExperience: getUserExperience( state ),
 	} ),
-	{ setSiteTitle, setDesignType, setSiteGoals, setSurvey, setUserExperience, recordTracksEvent }
+	{ setSiteTitle, setDesignType, setSiteGoals, setSurvey, setUserExperience, recordTracksEvent, setDomainSearchPrefill }
 )( localize( AboutStep ) );
