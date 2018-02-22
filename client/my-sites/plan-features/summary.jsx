@@ -69,7 +69,7 @@ class PlanFeaturesSummary extends Component {
 					{ current ? 'Plan summary' : 'Credit summary' }
 				</strong>
 				<div className="plan-features__summary-price-row">
-					<span className="plan-features__summary-item">{ planTitle } Plan</span>
+					<span className="plan-features__summary-item">{ planTitle } plan</span>
 					<span className="plan-features__summary-price">
 						{ formatCurrency( yearlyPrice, currencyCode ) }
 					</span>
