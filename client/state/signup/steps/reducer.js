@@ -5,6 +5,7 @@
  */
 
 import designType from './design-type/reducer';
+import domains from './domains/reducer';
 import siteTitle from './site-title/reducer';
 import siteGoals from './site-goals/reducer';
 import userExperience from './user-experience/reducer';
@@ -13,6 +14,7 @@ import survey from './survey/reducer';
 
 export default combineReducers( {
 	designType,
+	domains,
 	siteTitle,
 	siteGoals,
 	userExperience,
