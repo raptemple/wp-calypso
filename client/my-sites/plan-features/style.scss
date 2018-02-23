@@ -563,10 +563,9 @@ $plan-features-sidebar-width: 272px;
 	.plan-price.is-original {
 		color: $gray-dark;
 	}
-	.plan-price.is-discounted {
-		display: none;
-	}
-	.plan-price.is-original:before {
+	.plan-price.is-discounted,
+	.plan-price.is-original:before,
+	.plan-features__header-tip-info {
 		display: none;
 	}
 }
