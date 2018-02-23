@@ -45,6 +45,10 @@ class PlanFeaturesSummary extends Component {
 			return null;
 		}
 
+		if ( isJetpackSite && current ) {
+			return null;
+		}
+
 		if ( discountPrice ) {
 			if ( isJetpackSite ) {
 				yearlyPrice = rawPrice;

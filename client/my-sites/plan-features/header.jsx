@@ -212,6 +212,7 @@ class PlanFeaturesHeader extends Component {
 			relatedMonthlyPlan,
 			site,
 			isInSignup,
+			showModifiedPricingDisplay,
 		} = this.props;
 
 		if ( isPlaceholder && ! isInSignup ) {
@@ -249,7 +250,9 @@ class PlanFeaturesHeader extends Component {
 				<span className="plan-features__header-price-group">
 					<PlanPrice
 						currencyCode={ currencyCode }
-						rawPrice={ originalPrice }
+						rawPrice={
+							showModifiedPricingDisplay && this.isPlanCurrent() ? rawPrice : originalPrice
+						}
 						isInSignup={ isInSignup }
 						original
 					/>
