@@ -5,6 +5,7 @@
  */
 import { http } from 'state/data-layer/wpcom-http/actions';
 import {
+	deleteJetpackOnboardingCredentials,
 	MAX_WOOCOMMERCE_INSTALL_RETRIES,
 	requestJetpackOnboardingSettings,
 	saveJetpackOnboardingSettings,
@@ -15,6 +16,7 @@ import {
 	fromApi,
 } from '../';
 import {
+	JETPACK_CONNECT_AUTHORIZE_RECEIVE,
 	JETPACK_ONBOARDING_SETTINGS_SAVE,
 	JETPACK_ONBOARDING_SETTINGS_UPDATE,
 } from 'state/action-types';
@@ -346,6 +348,66 @@ describe( 'retryOrAnnounceSaveFailure()', () => {
 					duration: 5000,
 				} ),
 			} )
+		);
+	} );
+} );
+
+describe( 'deleteJetpackOnboardingCredentials()', () => {
+	const dispatch = jest.fn();
+	const token = 'abcd1234';
+	const userEmail = 'example@yourgroovydomain.com';
+	const siteId = 12345678;
+	const credentials = {
+		token,
+		userEmail,
+	};
+
+	const action = {
+		type: JETPACK_CONNECT_AUTHORIZE_RECEIVE,
+		siteId,
+	};
+
+	test( 'should not dispatch an action if credentials of the site are missing', () => {
+		const getState = () => ( {
+			jetpackOnboarding: {
+				credentials: {},
+			},
+		} );
+
+		deleteJetpackOnboardingCredentials( { dispatch, getState }, action );
+
+		expect( dispatch ).toHaveBeenCalledTimes( 0 );
+	} );
+
+	test( 'should dispatch an action for POST HTTP request to delete Jetpack Onboarding credentials', () => {
+		const getState = () => ( {
+			jetpackOnboarding: {
+				credentials: {
+					[ siteId ]: credentials,
+				},
+			},
+		} );
+
+		deleteJetpackOnboardingCredentials( { dispatch, getState }, action );
+
+		expect( dispatch ).toHaveBeenCalledWith(
+			http(
+				{
+					apiVersion: '1.1',
+					method: 'POST',
+					path: '/jetpack-blogs/' + siteId + '/rest-api/',
+					body: {
+						path: '/jetpack/v4/settings/',
+						body: JSON.stringify( {
+							onboarding: {
+								end: true,
+							},
+						} ),
+						json: true,
+					},
+				},
+				action
+			)
 		);
 	} );
 } );

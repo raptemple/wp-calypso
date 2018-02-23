@@ -3,7 +3,7 @@
 /**
  * External dependencies
  */
-import { get, startsWith } from 'lodash';
+import { get, noop, startsWith } from 'lodash';
 import { translate } from 'i18n-calypso';
 
 /**
@@ -13,6 +13,7 @@ import { dispatchRequest } from 'state/data-layer/wpcom-http/utils';
 import { errorNotice } from 'state/notices/actions';
 import { http } from 'state/data-layer/wpcom-http/actions';
 import {
+	JETPACK_CONNECT_AUTHORIZE_RECEIVE,
 	JETPACK_ONBOARDING_SETTINGS_REQUEST,
 	JETPACK_ONBOARDING_SETTINGS_SAVE,
 } from 'state/action-types';
@@ -172,6 +173,35 @@ export const retryOrAnnounceSaveFailure = ( { dispatch }, action, { message: err
 	} );
 };
 
+export const deleteJetpackOnboardingCredentials = ( { dispatch, getState }, action ) => {
+	const { siteId } = action;
+	const state = getState();
+	const credentials = getUnconnectedSite( state, siteId );
+	if ( ! credentials ) {
+		return noop;
+	}
+
+	return dispatch(
+		http(
+			{
+				apiVersion: '1.1',
+				method: 'POST',
+				path: '/jetpack-blogs/' + siteId + '/rest-api/',
+				body: {
+					path: '/jetpack/v4/settings/',
+					body: JSON.stringify( {
+						onboarding: {
+							end: true,
+						},
+					} ),
+					json: true,
+				},
+			},
+			action
+		)
+	);
+};
+
 export default {
 	[ JETPACK_ONBOARDING_SETTINGS_REQUEST ]: [
 		dispatchRequest(
@@ -185,5 +215,8 @@ export default {
 	],
 	[ JETPACK_ONBOARDING_SETTINGS_SAVE ]: [
 		dispatchRequest( saveJetpackOnboardingSettings, handleSaveSuccess, retryOrAnnounceSaveFailure ),
+	],
+	[ JETPACK_CONNECT_AUTHORIZE_RECEIVE ]: [
+		dispatchRequest( deleteJetpackOnboardingCredentials, noop, noop ),
 	],
 };
