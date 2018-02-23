@@ -15,6 +15,7 @@ import FormLabel from 'components/forms/form-label';
 import FormTextInput from 'components/forms/form-text-input';
 import FormattedHeader from 'components/formatted-header';
 import FormPasswordInput from 'components/forms/form-password-input';
+import goToRemoteAuth from './main';
 import HelpButton from './help-button';
 import JetpackLogo from 'components/jetpack-logo';
 import LoggedOutForm from 'components/logged-out-form';
@@ -23,9 +24,12 @@ import LoggedOutFormLinks from 'components/logged-out-form/links';
 import LoggedOutFormLinkItem from 'components/logged-out-form/link-item';
 import MainWrapper from './main-wrapper';
 import Spinner from 'components/spinner';
+import { addCalypsoEnvQueryArg } from './utils';
+import { externalRedirect } from 'lib/route';
 import { jetpackRemoteInstall } from 'state/jetpack-remote-install/actions';
 import { getJetpackRemoteInstallError, isJetpackRemoteInstallComplete } from 'state/selectors';
 import { getConnectingSite } from 'state/jetpack-connect/selectors';
+import { REMOTE_PATH_AUTH } from './constants';
 
 export class OrgCredentialsForm extends Component {
 	state = {
@@ -56,14 +60,18 @@ export class OrgCredentialsForm extends Component {
 		const password = this.state.password;
 
 		this.props.jetpackRemoteInstall( url, username, password );
+		return;
+	};
+
+	componentDidUpdate() {
+		const { installError, isResponseCompleted, siteToConnect } = this.props;
 		if ( isResponseCompleted ) {
 			//redirect to auth
+			externalRedirect( addCalypsoEnvQueryArg( siteToConnect + REMOTE_PATH_AUTH ) );
 		}
 		if ( installError ) {
-			//handle error
+			//handle errors
 		}
-
-		return;
 	}
 
 	getChangeHandler = field => event => {
@@ -100,7 +108,6 @@ export class OrgCredentialsForm extends Component {
 	formFields() {
 		return (
 			<div>
-				{ }
 				<FormLabel htmlFor="username">{ this.props.translate( 'Username' ) }</FormLabel>
 				<FormTextInput
 					autoCapitalize="off"
@@ -195,15 +202,17 @@ export class OrgCredentialsForm extends Component {
 	}
 }
 
-export default connect( state => {
-	const jetpackConnectSite = getConnectingSite( state );
-	const siteToConnect = jetpackConnectSite.url;
-	const installError = getJetpackRemoteInstallError( state, siteToConnect );
-	const isResponseCompleted = isJetpackRemoteInstallComplete( state, siteToConnect );
-	return {
-		installError,
-		isResponseCompleted,
-		siteToConnect,
-	};
-},
-{ jetpackRemoteInstall } )( localize( OrgCredentialsForm ) );
+export default connect(
+	state => {
+		const jetpackConnectSite = getConnectingSite( state );
+		const siteToConnect = jetpackConnectSite.url;
+		const installError = getJetpackRemoteInstallError( state, siteToConnect );
+		const isResponseCompleted = isJetpackRemoteInstallComplete( state, siteToConnect );
+		return {
+			installError,
+			isResponseCompleted,
+			siteToConnect,
+		};
+	},
+	{ jetpackRemoteInstall }
+)( localize( OrgCredentialsForm ) );
