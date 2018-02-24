@@ -28,7 +28,10 @@ import {
 	getUnconnectedSiteIdBySlug,
 } from 'state/selectors';
 import { isJetpackSite } from 'state/sites/selectors';
-import { requestJetpackSettings } from 'state/jetpack-onboarding/actions';
+import {
+	requestJetpackSettings,
+	saveJetpackOnboardingSettings,
+} from 'state/jetpack-onboarding/actions';
 
 class JetpackOnboardingMain extends React.PureComponent {
 	static propTypes = {
@@ -92,6 +95,7 @@ class JetpackOnboardingMain extends React.PureComponent {
 						onBackClick={ this.getNavigationLinkClickHandler( 'back' ) }
 						onForwardClick={ this.getNavigationLinkClickHandler( 'forward' ) }
 						recordJpoEvent={ recordJpoEvent }
+						saveJetpackOnboardingSettings={ saveJetpackOnboardingSettings }
 						siteId={ siteId }
 						siteSlug={ siteSlug }
 						settings={ settings }
@@ -148,7 +152,7 @@ export default connect(
 			userIdHashed,
 		};
 	},
-	{ recordTracksEvent },
+	{ recordTracksEvent, saveJetpackOnboardingSettings },
 	(
 		{ siteId, userIdHashed, ...stateProps },
 		{ recordTracksEvent: recordTracksEventAction },
@@ -164,6 +168,7 @@ export default connect(
 				id: siteId + '_' + userIdHashed,
 				...additionalProperties,
 			} ),
+		saveJetpackOnboardingSettings,
 		...ownProps,
 	} )
 )( JetpackOnboardingMain );
