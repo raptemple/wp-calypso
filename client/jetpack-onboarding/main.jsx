@@ -166,7 +166,7 @@ export default connect(
 				...additionalProperties,
 			} ),
 		saveJetpackSettings: ( s, settings ) =>
-			saveJetpackSettingsAction( s, { ...query, onboarding: { settings } } ),
+			saveJetpackSettingsAction( s, { onboarding: { settings }, ...query } ),
 		...ownProps,
 	} )
 )( JetpackOnboardingMain );
