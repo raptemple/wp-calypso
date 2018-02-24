@@ -155,7 +155,10 @@ export default connect(
 	{ recordTracksEvent, saveJetpackOnboardingSettings },
 	(
 		{ siteId, userIdHashed, ...stateProps },
-		{ recordTracksEvent: recordTracksEventAction },
+		{
+			recordTracksEvent: recordTracksEventAction,
+			saveJetpackOnboardingSettings: saveJetpackOnboardingSettingsAction,
+		},
 		ownProps
 	) => ( {
 		siteId,
@@ -168,7 +171,7 @@ export default connect(
 				id: siteId + '_' + userIdHashed,
 				...additionalProperties,
 			} ),
-		saveJetpackOnboardingSettings,
+		saveJetpackOnboardingSettings: saveJetpackOnboardingSettingsAction,
 		...ownProps,
 	} )
 )( JetpackOnboardingMain );
