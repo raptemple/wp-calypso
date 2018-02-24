@@ -23,10 +23,12 @@ import {
 import {
 	getJetpackOnboardingSettings,
 	getRequest,
+	getUnconnectedSite,
 	getUnconnectedSiteUserHash,
 	getUnconnectedSiteIdBySlug,
 } from 'state/selectors';
-import { requestJetpackOnboardingSettings } from 'state/jetpack-onboarding/actions';
+import { isJetpackSite } from 'state/sites/selectors';
+import { requestJetpackSettings } from 'state/jetpack-onboarding/actions';
 
 class JetpackOnboardingMain extends React.PureComponent {
 	static propTypes = {
@@ -108,7 +110,20 @@ export default connect(
 		const siteId = getUnconnectedSiteIdBySlug( state, siteSlug );
 		const settings = getJetpackOnboardingSettings( state, siteId );
 		const isBusiness = get( settings, 'siteType' ) === 'business';
-		const isRequestingSettings = getRequest( state, requestJetpackOnboardingSettings( siteId ) )
+
+		const isConnected = isJetpackSite( state, siteId );
+		let query;
+
+		if ( ! isConnected && getUnconnectedSite( state, siteId ) ) {
+			const { token, jpUser } = getUnconnectedSite( state, siteId );
+			query = {
+				onboarding: {
+					token,
+					jpUser,
+				},
+			};
+		}
+		const isRequestingSettings = getRequest( state, requestJetpackSettings( siteId, query ) )
 			.isLoading;
 
 		const userIdHashed = getUnconnectedSiteUserHash( state, siteId );
@@ -125,6 +140,7 @@ export default connect(
 		] );
 		return {
 			isRequestingSettings,
+			query,
 			siteId,
 			siteSlug,
 			settings,
